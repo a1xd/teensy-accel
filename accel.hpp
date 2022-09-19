@@ -1,51 +1,103 @@
-struct settings {
-    int dpi = 1800; // set to 0 to ignore normalization to 1000 dpi
+#include "rawaccel-common/rawaccel.hpp"
+
+using namespace rawaccel;
+
+// optional, for normalization to 1000 dpi
+constexpr int dpi = 0;
+
+const profile profile_settings = []{
+    profile args;
     
-    double domain_weight = 0.8;
-    double range_weight = 0.2;
-    double sens_multiplier = 0.7;
-    double yx_sens_ratio = 1.2;
-};
+    /*
+    Mode definitions 
+    
+    enum class accel_mode {
+        classic,
+        jump,
+        natural,
+        motivity,
+        power,
+        lookup,
+        noaccel
+    };
 
-inline double accel_factor(double x)
-{
-  if (x <= 1) 
-      return 1;
-      
-  return log(x) + 1 / x;
-}
+    enum class cap_mode {
+        io, in, out
+    };
+    */
 
-struct vec2d { double x, y; };
+    args.whole = true;
+    args.lp_norm = 2;
+    args.domain_weights = { 1, 1 };
+    args.range_weights = { 1, 1 };
+    
+    args.sensitivity = 1;
+    args.yx_sens_ratio = 1;
+    args.lr_sens_ratio = 1;
+    args.ud_sens_ratio = 1;
 
-using milliseconds = double;
+    args.degrees_rotation = 0;
 
-constexpr 
-class modifier {
-public:
-    constexpr modifier(const settings& args) :
-        domain_weight{args.domain_weight * ((args.dpi > 0) ? (1e3 / args.dpi) : 1)},
-        range_weight{args.range_weight},
-        sens_x{args.sens_multiplier / args.domain_weight},
-        sens_y{sens_x * args.yx_sens_ratio} {}
-	
-    void modify(vec2d& in, milliseconds t) const
-    {
-        in.x *= domain_weight;
-        in.y *= domain_weight;
+    args.degrees_snap = 0;
 
-        double speed = sqrt(in.x * in.x + in.y * in.y) / t;
+    args.speed_min = 0;
+    args.speed_max = 0;
+    
+    
+    //
+    // Whole or X accel parameters
+    //
+    args.accel_x.mode = accel_mode::noaccel;
+    args.accel_x.gain = 1;
+
+    args.accel_x.input_offset = 0;
+    args.accel_x.output_offset = 0;
+    args.accel_x.acceleration = 0.005;
+    args.accel_x.decay_rate = 0.1;
+    args.accel_x.growth_rate = 1;
+    args.accel_x.motivity = 1.5;
+    args.accel_x.exponent_classic = 2;
+    args.accel_x.scale = 1;
+    args.accel_x.exponent_power = 0.05;
+    args.accel_x.limit = 1.5;
+    args.accel_x.midpoint = 5;
+    args.accel_x.smooth = 0.5;
+
+    args.accel_x.cap = { 15, 1.5 };
+    args.accel_x.cap_mode = cap_mode::out;
         
-        double scale = 1 + range_weight * (accel_factor(speed) - 1);
-        in.x *= scale;
-        in.y *= scale;
+    
+    //
+    // Y accel parameters
+    //
+    args.accel_y.mode = accel_mode::noaccel;
+    args.accel_y.gain = 1;
 
-        in.x *= sens_x;
-        in.y *= sens_y;
-    }
+    args.accel_y.input_offset = 0;
+    args.accel_y.output_offset = 0;
+    args.accel_y.acceleration = 0.005;
+    args.accel_y.decay_rate = 0.1;
+    args.accel_y.growth_rate = 1;
+    args.accel_y.motivity = 1.5;
+    args.accel_y.exponent_classic = 2;
+    args.accel_y.scale = 1;
+    args.accel_y.exponent_power = 0.05;
+    args.accel_y.limit = 1.5;
+    args.accel_y.midpoint = 5;
+    args.accel_y.smooth = 0.5;
 
-private:
-    double domain_weight;
-    double range_weight;
-    double sens_x;
-    double sens_y;
-} mod{settings{}};
+    args.accel_y.cap = { 15, 1.5 };
+    args.accel_y.cap_mode = cap_mode::out;
+
+    return args;
+}();
+
+const struct ra_mod_pair {
+    modifier_settings settings;
+    modifier mod;
+} mod_pair = []{
+    ra_mod_pair ret;
+    ret.settings = { profile_settings };
+    ret.mod = { ret.settings };
+    return ret;
+}();

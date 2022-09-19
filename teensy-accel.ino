@@ -29,7 +29,7 @@ void loop() {
 
             vec2d in{ static_cast<double>(x), static_cast<double>(y) };
             
-            mod.modify(in, elapsed_ms);
+            mod_pair.mod.modify(in, mod_pair.settings, (dpi > 0) ? 1e3 / dpi : 1, elapsed_ms);
 
             in.x += carry.x;
             in.y += carry.y;
