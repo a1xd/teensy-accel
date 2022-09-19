@@ -102,7 +102,7 @@ namespace rawaccel {
         unsigned device_data_size = 0;
     };
 
-    static_assert(alignof(io_base) == alignof(modifier_settings) && alignof(modifier_settings) == alignof(device_settings));
+    static_assert(alignof(io_base) == alignof(modifier_settings) && alignof(modifier_settings) == alignof(device_settings), "");
 
     class modifier {
     public:
@@ -132,11 +132,11 @@ namespace rawaccel {
 
                         if (reference_angle > M_PI / 2 - snap) {
                             reference_angle = M_PI / 2;
-                            in = { 0, _copysign(magnitude(in), in.y) };
+                            in = { 0, copysign(magnitude(in), in.y) };
                         }
                         else if (reference_angle < snap) {
                             reference_angle = 0;
-                            in = { _copysign(magnitude(in), in.x), 0 };
+                            in = { copysign(magnitude(in), in.x), 0 };
                         }
                     }
                 }
@@ -196,7 +196,7 @@ namespace rawaccel {
             }
         }
 
-        modifier(modifier_settings& settings)
+        modifier(const modifier_settings& settings)
         {
             set_callback(cb_x, settings.data.accel_x, settings.prof.accel_x);
             set_callback(cb_y, settings.data.accel_y, settings.prof.accel_y);
@@ -207,10 +207,11 @@ namespace rawaccel {
     private:
         using callback_t = double (*)(const accel_union&, const accel_args&, double, double);
 
-        void set_callback(callback_t& cb, accel_union& u, const accel_args& args)
+        void set_callback(callback_t& cb, const accel_union& u, const accel_args& args)
         {
             u.visit([&](auto& impl) {
                 cb = &callback_template<remove_ref_t<decltype(impl)>>;
+                return 0;
             }, args);
         }
 

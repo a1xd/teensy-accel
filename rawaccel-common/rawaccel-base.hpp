@@ -5,24 +5,24 @@
 namespace rawaccel {
     using milliseconds = double;
 
-    inline constexpr int POLL_RATE_MIN = 125;
-    inline constexpr int POLL_RATE_MAX = 8000;
+    /* inline */ constexpr int POLL_RATE_MIN = 125;
+    /* inline */ constexpr int POLL_RATE_MAX = 8000;
 
-    inline constexpr milliseconds DEFAULT_TIME_MIN = 1000.0 / POLL_RATE_MAX / 2;
-    inline constexpr milliseconds DEFAULT_TIME_MAX = 1000.0 / POLL_RATE_MIN * 2;
+    /* inline */ constexpr milliseconds DEFAULT_TIME_MIN = 1000.0 / POLL_RATE_MAX / 2;
+    /* inline */ constexpr milliseconds DEFAULT_TIME_MAX = 1000.0 / POLL_RATE_MIN * 2;
 
-    inline constexpr milliseconds WRITE_DELAY = 1000;
+    /* inline */ constexpr milliseconds WRITE_DELAY = 1000;
 
-    inline constexpr size_t MAX_DEV_ID_LEN = 200;
-    inline constexpr size_t MAX_NAME_LEN = 256;
+    /* inline */ constexpr size_t MAX_DEV_ID_LEN = 200;
+    /* inline */ constexpr size_t MAX_NAME_LEN = 256;
 
-    inline constexpr size_t LUT_RAW_DATA_CAPACITY = 514;
-    inline constexpr size_t LUT_POINTS_CAPACITY = LUT_RAW_DATA_CAPACITY / 2;
+    /* inline */ constexpr size_t LUT_RAW_DATA_CAPACITY = 514;
+    /* inline */ constexpr size_t LUT_POINTS_CAPACITY = LUT_RAW_DATA_CAPACITY / 2;
 
-    inline constexpr double MAX_NORM = 16;
+    /* inline */ constexpr double MAX_NORM = 16;
 
-    inline constexpr bool LEGACY = 0;
-    inline constexpr bool GAIN = 1;
+    /* inline */ constexpr bool LEGACY = 0;
+    /* inline */ constexpr bool GAIN = 1;
     
     enum class accel_mode {
         classic,
@@ -34,7 +34,7 @@ namespace rawaccel {
         noaccel
     };
 
-    enum class cap_mode {
+    enum class cap_mode_t {
         io, in, out
     };
 
@@ -56,7 +56,7 @@ namespace rawaccel {
         double smooth = 0.5;
 
         vec2d cap = { 15, 1.5 };
-        cap_mode cap_mode = cap_mode::out;
+        cap_mode_t cap_mode = cap_mode_t::out;
 
         int length = 0;
         mutable float data[LUT_RAW_DATA_CAPACITY] = {};

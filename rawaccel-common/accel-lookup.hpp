@@ -32,7 +32,9 @@ namespace rawaccel {
 		}
 	};
 
-	__forceinline
+#ifdef _KERNEL_MODE
+    __forceinline
+#endif
 	constexpr double lerp(double a, double b, double t)
 	{
 		double x = a + t * (b - a);

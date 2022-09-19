@@ -45,6 +45,26 @@ namespace rawaccel {
             }
         }
 
+        template <template <bool> class AccelTemplate, typename Visitor>
+        auto visit_helper(Visitor vis, bool gain) const
+        {
+            if (gain) return vis(reinterpret_cast<const AccelTemplate<GAIN>&>(*this));
+            else  return vis(reinterpret_cast<const AccelTemplate<LEGACY>&>(*this));
+        }
+
+        template <typename Visitor>
+        auto visit(Visitor vis, const accel_args& args) const
+        {
+            switch (args.mode) {
+            case accel_mode::classic:  return visit_helper<classic>(vis, args.gain);
+            case accel_mode::jump:     return visit_helper<jump>(vis, args.gain);
+            case accel_mode::natural:  return visit_helper<natural>(vis, args.gain);
+            case accel_mode::motivity: return visit_helper<loglog_sigmoid>(vis, args.gain);
+            case accel_mode::power:    return visit_helper<power>(vis, args.gain);
+            case accel_mode::lookup:   return vis(lut);
+            default:                   return vis(noaccel);
+            }
+        }
         void init(const accel_args& args)
         {
             visit([&](auto& impl) {

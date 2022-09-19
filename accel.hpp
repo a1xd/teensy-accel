@@ -21,8 +21,10 @@ const profile profile_settings = []{
         noaccel
     };
 
-    enum class cap_mode {
-        io, in, out
+    enum class cap_mode_t {
+        io, 
+        in, 
+        out
     };
     */
 
@@ -64,7 +66,7 @@ const profile profile_settings = []{
     args.accel_x.smooth = 0.5;
 
     args.accel_x.cap = { 15, 1.5 };
-    args.accel_x.cap_mode = cap_mode::out;
+    args.accel_x.cap_mode = cap_mode_t::out;
         
     
     //
@@ -87,7 +89,7 @@ const profile profile_settings = []{
     args.accel_y.smooth = 0.5;
 
     args.accel_y.cap = { 15, 1.5 };
-    args.accel_y.cap_mode = cap_mode::out;
+    args.accel_y.cap_mode = cap_mode_t::out;
 
     return args;
 }();
@@ -98,6 +100,7 @@ const struct ra_mod_pair {
 } mod_pair = []{
     ra_mod_pair ret;
     ret.settings = { profile_settings };
+    init_data(ret.settings);
     ret.mod = { ret.settings };
     return ret;
 }();
