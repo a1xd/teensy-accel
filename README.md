@@ -10,7 +10,7 @@ Besides a [Teensy 4.1 board](https://www.pjrc.com/store/teensy41.html) and a mic
 	> **Note**
 	> Teensyduino (as of v1.57) is only compatible with the legacy Arduino IDE (v1.8.19)
 - Open *teensy-accel.ino* in the Arduino IDE 
-- Edit the `settings` and `double accel_factor(double)` definitions in *accel.hpp*
+- Edit the Raw Accel `profile_settings` definition in *accel.hpp*
 - In the IDE *Tools* menu, ensure "Teensy 4.1" and "Keyboard + Mouse + Joystick" are selected under *Board* and *USB Type*
 - Plug in the board and click 'Upload'
 
